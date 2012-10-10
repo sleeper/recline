@@ -55,8 +55,8 @@ my.SlickGrid = Backbone.View.extend({
         fitColumns: false
       }, modelEtc.state
 
-      this.grid_options = modelEtc.options;
     );
+//      this.grid_options = modelEtc.options;
     this.state = new recline.Model.ObjectState(state);
   },
 
@@ -72,7 +72,7 @@ my.SlickGrid = Backbone.View.extend({
       explicitInitialization: true,
       syncColumnCellResize: true,
       forceFitColumns: this.state.get('fitColumns')
-    }, this.grid_options);
+    }, self.state.get('gridOptions'));
 
     // We need all columns, even the hidden ones, to show on the column picker
     var columns = [];
@@ -102,6 +102,10 @@ my.SlickGrid = Backbone.View.extend({
         column['width'] = widthInfo.width;
       }
 
+      var editInfo = _.find(self.state.get('columnsEditor'),function(c){return c.column == field.id});
+      if (editInfo){
+        column['editor'] = editInfo.editor;
+      }
       columns.push(column);
     });
 

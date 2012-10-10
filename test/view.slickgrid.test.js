@@ -31,7 +31,9 @@ test('state', function () {
       columnsOrder:['lon','id','z','date', 'y', 'country'],
       columnsWidth:[
         {column:'id',width: 250}
-      ]
+      ],
+      gridOptions: {editable: true},
+      columnsEditor: [{column: 'country', editor: Slick.Editors.Text}]
     }
   });
   $('.fixtures .test-datatable').append(view.el);
@@ -54,7 +56,40 @@ test('state', function () {
   // Column width
   equal($('.slick-header-column[title="id"]').width(),250);
 
+  // Editable grid
+  equal(true, view.grid.getOptions().editable);
+
+  // Editor on 'country' column
+  var countryColumn = _.find(view.grid.getColumns(), function (c) { return c.field == 'country'; });
+  equal(Slick.Editors.Text, countryColumn.editor);
+
   view.remove();
+});
+
+test('editable', function () {
+  var dataset = Fixture.getDataset();
+  var view = new recline.View.SlickGrid({
+    model: dataset,
+    state: {
+      hiddenColumns:['x','lat','title'],
+      columnsOrder:['lon','id','z','date', 'y', 'country'],
+      columnsWidth:[
+        {column:'id',width: 250}
+      ],
+      gridOptions: {editable: true},
+      columnsEditor: [{column: 'country', editor: Slick.Editors.Text}]
+    }
+  });
+
+  $('.fixtures .test-datatable').append(view.el);
+  view.render();
+  view.grid.init();
+
+  dataset.model.on('change', function() { console.log("FRED");});
+
+  // Be sure a cell change triggers a change of the model
+  view.grid.updateCell(1,1, "foo");
+
 });
 
 test('renderers', function () {
