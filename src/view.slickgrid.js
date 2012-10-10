@@ -12,7 +12,29 @@ this.recline.View = this.recline.View || {};
 //
 // Initialize it with a `recline.Model.Dataset`.
 //
-// NB: you need an explicit height on the element for slickgrid to work
+// Additional options to drive SlickGrid grid can be given through an options
+// hash. Grid level options are given as key of this options hash, whereas
+// columns level options are furnished as an 'columns' hash.
+// Each key of this 'columns' has is the 'id' of the column the option is 
+// intended to.
+// For example, if our grid has 3 columns ('id', 'title' and 'date'), the following
+// can be used to make the grid autoEditable, and have a Date editor for the 
+// 'data' column, a text editor for 'text' and noting for 'id':
+//
+//    var grid = new recline.View.SlickGrid({
+//         model: dataset,
+//         el: $el,
+//         options: {
+//          editable: true,
+//          enableCellNavigation: true,
+//          autoEdit: true,
+//          columns: {
+//            date: { editor: Slick.Editor.Date },
+//            text: {editor: Slick.Editor.Text}
+//          }
+//        }
+//      });
+//// NB: you need an explicit height on the element for slickgrid to work
 my.SlickGrid = Backbone.View.extend({
   initialize: function(modelEtc) {
     var self = this;
@@ -28,8 +50,12 @@ my.SlickGrid = Backbone.View.extend({
         columnsOrder: [],
         columnsSort: {},
         columnsWidth: [],
+        columnsEditor: [],
+        options: {},
         fitColumns: false
       }, modelEtc.state
+
+      this.grid_options = modelEtc.options;
     );
     this.state = new recline.Model.ObjectState(state);
   },
@@ -40,13 +66,13 @@ my.SlickGrid = Backbone.View.extend({
   render: function() {
     var self = this;
 
-    var options = {
+    var options = _.extend({
       enableCellNavigation: true,
       enableColumnReorder: true,
       explicitInitialization: true,
       syncColumnCellResize: true,
       forceFitColumns: this.state.get('fitColumns')
-    };
+    }, this.grid_options);
 
     // We need all columns, even the hidden ones, to show on the column picker
     var columns = [];
