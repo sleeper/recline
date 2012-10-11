@@ -134,14 +134,29 @@ my.SlickGrid = Backbone.View.extend({
     }
     columns = columns.concat(tempHiddenColumns);
 
-    var data = [];
+    function RowSet() {
+      var models = [];
+      var rows = [];
+
+      this.push = function(model, row) {
+        models.push(model);
+        rows.push(row);
+      }
+
+      this.getLength = function() { return rows.length; }
+      this.getItem = function(index) { return rows[index];}
+      this.getItemMetadata= function(index) { return {};}
+      this.getModel= function(index) { return models[index]; }
+    };
+
+    var data = new RowSet();
 
     this.model.records.each(function(doc){
       var row = {};
       self.model.fields.each(function(field){
         row[field.id] = doc.getFieldValueUnrendered(field);
       });
-      data.push(row);
+      data.push(doc, row);
     });
 
     this.grid = new Slick.Grid(this.el, data, visibleColumns, options);
@@ -177,6 +192,18 @@ my.SlickGrid = Backbone.View.extend({
           }
         });
         self.state.set({columnsWidth:columnsWidth});
+    });
+
+    this.grid.onCellChange.subscribe(function (e, args) {
+      // We need to change the model associated value
+      //
+      var grid = args.grid;
+      var model = data.getModel(args.row);
+      var field = grid.getColumns()[args.cell]['id'];
+      var v = {};
+      v[field] = args.item[field];
+      model.set(v);
+      console.log("FRED: row: " + args.row + " cell: " + args.cell + " ==> " + field);
     });
 
     var columnpicker = new Slick.Controls.ColumnPicker(columns, this.grid,

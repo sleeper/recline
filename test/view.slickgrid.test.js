@@ -85,10 +85,20 @@ test('editable', function () {
   view.render();
   view.grid.init();
 
-  dataset.model.on('change', function() { console.log("FRED");});
+//  dataset.model.on('change', function() { console.log("FRED");});
+//  dataset.records.model.on('change', function(){console.log("FRED: model changed");});
+//  dataset.records.on('change', function(){console.log("FRED: list changed");});
+    recline.Model.RecordList.on('change', function() { console.log("FRED: called from collection");});
 
   // Be sure a cell change triggers a change of the model
-  view.grid.updateCell(1,1, "foo");
+      e = new Slick.EventData();
+      return view.grid.onCellChange.notify({ 
+                row: 1,
+                cell: 0,
+                item: {lon: "foo", id: 1, z: 23, date: "12", y: 3, country: 'FR'},
+                grid: view.grid
+              }, e, view.grid);
+//  view.grid.updateCell(1,1, "foo");
 
 });
 
