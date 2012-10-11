@@ -11,26 +11,21 @@
 
 <p>Initialize it with a <code>recline.Model.Dataset</code>.</p>
 
-<p>Additional options to drive SlickGrid grid can be given through an options
-hash. Grid level options are given as key of this options hash, whereas
-columns level options are furnished as an 'columns' hash.
-Each key of this 'columns' has is the 'id' of the column the option is 
-intended to.
-For example, if our grid has 3 columns ('id', 'title' and 'date'), the following
-can be used to make the grid autoEditable, and have a Date editor for the 
-'data' column, a text editor for 'text' and noting for 'id':</p>
+<p>Additional options to drive SlickGrid grid can be given through state.
+The following keys allow for customization:
+* gridOptions: to add options at grid level
+* columnsEditor: to add editor for editable columns</p>
 
-<p>var grid = new recline.View.SlickGrid({
+<p>For example:
+   var grid = new recline.View.SlickGrid({
         model: dataset,
         el: $el,
-        options: {
-         editable: true,
-         enableCellNavigation: true,
-         autoEdit: true,
-         columns: {
-           date: { editor: Slick.Editor.Date },
-           text: {editor: Slick.Editor.Text}
-         }
+        state: {
+         gridOptions: {editable: true},
+         columnsEditor: [
+           {column: 'date', editor: Slick.Editor.Date },
+           {column: 'title', editor: Slick.Editor.Text}
+         ]
        }
      });
 // NB: you need an explicit height on the element for slickgrid to work</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">my</span><span class="p">.</span><span class="nx">SlickGrid</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
@@ -180,7 +175,6 @@ column picker</p>             </td>             <td class="code">               
       <span class="kd">var</span> <span class="nx">v</span> <span class="o">=</span> <span class="p">{};</span>
       <span class="nx">v</span><span class="p">[</span><span class="nx">field</span><span class="p">]</span> <span class="o">=</span> <span class="nx">args</span><span class="p">.</span><span class="nx">item</span><span class="p">[</span><span class="nx">field</span><span class="p">];</span>
       <span class="nx">model</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">v</span><span class="p">);</span>
-      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;FRED: row: &quot;</span> <span class="o">+</span> <span class="nx">args</span><span class="p">.</span><span class="nx">row</span> <span class="o">+</span> <span class="s2">&quot; cell: &quot;</span> <span class="o">+</span> <span class="nx">args</span><span class="p">.</span><span class="nx">cell</span> <span class="o">+</span> <span class="s2">&quot; ==&gt; &quot;</span> <span class="o">+</span> <span class="nx">field</span><span class="p">);</span>
     <span class="p">});</span>
 
     <span class="kd">var</span> <span class="nx">columnpicker</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Controls</span><span class="p">.</span><span class="nx">ColumnPicker</span><span class="p">(</span><span class="nx">columns</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">grid</span><span class="p">,</span>

@@ -3705,26 +3705,21 @@ this.recline.View = this.recline.View || {};
 //
 // Initialize it with a `recline.Model.Dataset`.
 //
-// Additional options to drive SlickGrid grid can be given through an options
-// hash. Grid level options are given as key of this options hash, whereas
-// columns level options are furnished as an 'columns' hash.
-// Each key of this 'columns' has is the 'id' of the column the option is 
-// intended to.
-// For example, if our grid has 3 columns ('id', 'title' and 'date'), the following
-// can be used to make the grid autoEditable, and have a Date editor for the 
-// 'data' column, a text editor for 'text' and noting for 'id':
+// Additional options to drive SlickGrid grid can be given through state.
+// The following keys allow for customization:
+// * gridOptions: to add options at grid level
+// * columnsEditor: to add editor for editable columns
 //
+// For example:
 //    var grid = new recline.View.SlickGrid({
 //         model: dataset,
 //         el: $el,
-//         options: {
-//          editable: true,
-//          enableCellNavigation: true,
-//          autoEdit: true,
-//          columns: {
-//            date: { editor: Slick.Editor.Date },
-//            text: {editor: Slick.Editor.Text}
-//          }
+//         state: {
+//          gridOptions: {editable: true},
+//          columnsEditor: [
+//            {column: 'date', editor: Slick.Editor.Date },
+//            {column: 'title', editor: Slick.Editor.Text}
+//          ]
 //        }
 //      });
 //// NB: you need an explicit height on the element for slickgrid to work
@@ -3896,7 +3891,6 @@ my.SlickGrid = Backbone.View.extend({
       var v = {};
       v[field] = args.item[field];
       model.set(v);
-      console.log("FRED: row: " + args.row + " cell: " + args.cell + " ==> " + field);
     });
 
     var columnpicker = new Slick.Controls.ColumnPicker(columns, this.grid,
